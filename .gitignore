@@ -1,0 +1,8 @@
+*.csv
+*.set
+*.png
+*.zip
+*.fdt
+*.db
+*.numbers
+/node_modules

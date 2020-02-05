@@ -16,13 +16,13 @@ eegFiles = dir(fullfile(rawDirectory,'*.csv'));
 elpFile = char(strcat(pwd, "/res/standard-10-5-cap385.elp"));
 
 %% Channel Locations
-channelLocationFile = char(strcat(pwd, "/res/td_asd_malaia.ced"));
+channelLocationFile = char(strcat(pwd, "/res/g.nautilus.ced"));
 
 %% Sample Rate
-sampleRate = 512;
+sampleRate = 220;
 
 %% Number of Channels; 
-numChannels = 34;
+numChannels = 16;
 
 eeglab("redraw")
 for k = 1:length(eegFiles)
@@ -52,7 +52,7 @@ for k = 1:length(eegFiles)
     EEG = pop_reref( EEG, []);
     
     %% Clean line noise
-    EEG = pop_cleanline(EEG, 'bandwidth',2,'chanlist', [1:30] ,'computepower',1,'linefreqs',60,'normSpectrum',0,'p',0.01,'pad',2,'plotfigures',0,'scanforlines',1,'sigtype','Channels','tau',100,'verb',1,'winsize',2,'winstep',1);
+    EEG = pop_cleanline(EEG, 'bandwidth',2,'chanlist', [1:numChannels] ,'computepower',1,'linefreqs',60,'normSpectrum',0,'p',0.01,'pad',2,'plotfigures',0,'scanforlines',1,'sigtype','Channels','tau',100,'verb',1,'winsize',2,'winstep',1);
     
     %% Add Hi Pass filter
     EEG = pop_eegfiltnew(EEG, 0.5, 30);

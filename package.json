@@ -1,0 +1,27 @@
+{
+  "name": "eeg_analysis",
+  "version": "0.0.1",
+  "description": "Script to analyze EEG data ",
+  "main": "reorganizeEEGData.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/htil/EEG-Analysis.git"
+  },
+  "keywords": [
+    "eeglab"
+  ],
+  "author": "HTIL",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/htil/EEG-Analysis/issues"
+  },
+  "homepage": "https://github.com/htil/EEG-Analysis#readme",
+  "dependencies": {
+    "bcijs": "^1.6.5",
+    "csv-parser": "^2.3.2",
+    "mathjs": "^6.6.0"
+  }
+}
