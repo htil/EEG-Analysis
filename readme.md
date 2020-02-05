@@ -24,7 +24,7 @@ Run `node latency_calc.js`. Be sure there is a signal file in the `/original_gte
 
 ## Working with EEGLAB
 
-1. [Install EEGLAB](instructions/installing_eeglab.pdf)
+1. [Install EEGLAB](instructions/installing_eeglab-min.pdf)
 2. Open MATLAB
 3. Run the following command in MATLAB `run preprocess.m`
 
