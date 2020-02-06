@@ -5,4 +5,5 @@
 *.fdt
 *.db
 *.numbers
+*.txt
 /node_modules
