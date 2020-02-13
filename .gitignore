@@ -6,4 +6,5 @@
 *.db
 *.numbers
 *.txt
+*.DS_Store
 /node_modules

@@ -29,3 +29,7 @@ Run `node latency_calc.js`. Be sure there is a signal file in the `/original_gte
 3. Run the following command in MATLAB `run preprocess.m`
 
 - This should generate processed files in the `clean` directory.
+
+## Additional Resources
+
+1. [Independent components analysis for removing artifacts](https://www.youtube.com/watch?v=AKCK7DXa0gY)

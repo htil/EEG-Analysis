@@ -3,9 +3,9 @@ const fs = require("fs");
 let events = [];
 let results = [];
 let firstSignalTime = null;
-const signalFile = "original_gtec_data/pilot2.csv";
-const eventFile = "original_events/pilot2_events.csv";
-const latencyEventFileName = "raw/pilot2.txt";
+const signalFile = "original_gtec_data/p1.csv";
+const eventFile = "original_events/p1_events.csv";
+const latencyEventFileName = "raw/p1.txt";
 let fileString = "latency\ttype\tposition\n";
 let type = "HV";
 //1542656253328 last events

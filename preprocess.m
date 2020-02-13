@@ -16,13 +16,13 @@ eegFiles = dir(fullfile(rawDirectory,'*.csv'));
 elpFile = char(strcat(pwd, "/res/standard-10-5-cap385.elp"));
 
 %% Channel Locations
-channelLocationFile = char(strcat(pwd, "/res/g.nautilus.ced"));
+channelLocationFile = char(strcat(pwd, "/res/muse.ced"));
 
 %% Sample Rate
 sampleRate = 220;
 
 %% Number of Channels; 
-numChannels = 16;
+numChannels = 4;
 
 eeglab("redraw")
 for k = 1:length(eegFiles)
@@ -54,11 +54,11 @@ for k = 1:length(eegFiles)
     %% Clean line noise
     EEG = pop_cleanline(EEG, 'bandwidth',2,'chanlist', [1:numChannels] ,'computepower',1,'linefreqs',60,'normSpectrum',0,'p',0.01,'pad',2,'plotfigures',0,'scanforlines',1,'sigtype','Channels','tau',100,'verb',1,'winsize',2,'winstep',1);
     
-    %% Add Hi Pass filter
+    %% Add Band Pass filter
     EEG = pop_eegfiltnew(EEG, 0.5, 30);
     
     %% Remove Channels (Check to see if any channels are noisy)
-    %EEG = pop_select( EEG,'nochannel',{'F7' 'VEOG' 'HEOG'});
+    EEG = pop_select( EEG,'nochannel',{'VEOG' 'HEOG'});
     
     %% Create New Set
     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 12,'setname', eegFiles(k).name,'gui','off');
