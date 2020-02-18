@@ -2,6 +2,7 @@ currentDirectory = pwd;
 ALLEEG = [];
 CURRENTSET = 1;
 runICA = 0;
+isEvents = 1;
 
 %% Directory that stores raw files
 rawDirectory = strcat(pwd, "/raw/");
@@ -16,13 +17,13 @@ eegFiles = dir(fullfile(rawDirectory,'*.csv'));
 elpFile = char(strcat(pwd, "/res/standard-10-5-cap385.elp"));
 
 %% Channel Locations
-channelLocationFile = char(strcat(pwd, "/res/muse.ced"));
+channelLocationFile = char(strcat(pwd, "/res/openbci.ced"));
 
 %% Sample Rate
-sampleRate = 220;
+sampleRate = 250;
 
 %% Number of Channels; 
-numChannels = 4;
+numChannels = 3;
 
 eeglab("redraw")
 for k = 1:length(eegFiles)
@@ -58,16 +59,18 @@ for k = 1:length(eegFiles)
     EEG = pop_eegfiltnew(EEG, 0.5, 30);
     
     %% Remove Channels (Check to see if any channels are noisy)
-    EEG = pop_select( EEG,'nochannel',{'VEOG' 'HEOG'});
+    %EEG = pop_select( EEG,'nochannel',{'VEOG' 'HEOG'});
     
     %% Create New Set
     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 12,'setname', eegFiles(k).name,'gui','off');
 
     %% Import Events
-    eventFileName = char(strcat(rawDirectory, outputFileName,  ".txt"));
-    disp(eventFileName)
-    EEG = pop_importevent( EEG, 'event', eventFileName, 'fields', {'latency' 'type' 'position'},'skipline',1,'timeunit',1);
-   
+    if isEvents == 1
+        eventFileName = char(strcat(rawDirectory, outputFileName,  ".txt"));
+        disp(eventFileName)
+        EEG = pop_importevent( EEG, 'event', eventFileName, 'fields', {'latency' 'type' 'position'},'skipline',1,'timeunit',1);
+    end
+    
     % Run ICA
     if runICA == 1
         EEG = pop_runica(EEG, 'extended',1,'interupt','on');
