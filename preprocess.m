@@ -20,7 +20,7 @@ elpFile = char(strcat(pwd, "/res/standard-10-5-cap385.elp"));
 channelLocationFile = char(strcat(pwd, "/res/openbci.ced"));
 
 %% Sample Rate
-sampleRate = 250;
+sampleRate = 256;
 
 %% Number of Channels; 
 numChannels = 3;

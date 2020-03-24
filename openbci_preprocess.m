@@ -1,23 +1,14 @@
 %% Directory that stores raw files
-rawDirectory = strcat(pwd, "/raw/");
+startRange = getMS(11);
+endRange = getMS(12);
 
-%% CSV File
-eegFiles = dir(fullfile(rawDirectory,'*.csv'));
+[ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
+EEG = pop_loadset('filename','openbci_p1_clean.set','filepath','/Users/chris/Documents/eeg_analysis/clean/');
+figure(1); pop_newtimef( EEG, 1, 1, [startRange  endRange], [3         0.5] , 'topovec', 1, 'elocs', EEG.chanlocs, 'chaninfo', EEG.chaninfo, 'caption', 'FP1', 'baseline',[0], 'freqs', [0 30], 'plotphase', 'off', 'padratio', 1);
+figure(2); pop_newtimef( EEG, 1, 2, [startRange  endRange], [3         0.5] , 'topovec', 1, 'elocs', EEG.chanlocs, 'chaninfo', EEG.chaninfo, 'caption', 'FP1', 'baseline',[0], 'freqs', [0 30], 'plotphase', 'off', 'padratio', 1);
+figure(3); pop_newtimef( EEG, 1, 3, [startRange  endRange], [3         0.5] , 'topovec', 1, 'elocs', EEG.chanlocs, 'chaninfo', EEG.chaninfo, 'caption', 'FP1', 'baseline',[0], 'freqs', [0 30], 'plotphase', 'off', 'padratio', 1)
+eeglab('redraw');
 
-for k = 1:length(eegFiles)
-    %% Get file
-    currentFile = eegFiles(k).name;
-    outputFileName = split(currentFile,"."); outputFileName = outputFileName(1);
-    file = strcat(rawDirectory, currentFile);
-    disp(file)
-    
-    %% Load EEG Data
-    participantEEG = loadFile(file);
-    
-    
-end
-
-function EEG = loadFile(filename)
-    file = csvread(char(filename), 1, 0);
-    EEG = transpose(file);
+function ms = getMS(time)
+        ms = time * 60 * 1000;
 end
