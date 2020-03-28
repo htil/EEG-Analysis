@@ -1,0 +1,226 @@
+---
+title: "BrainButler"
+output: html_document
+---
+
+# P100
+
+Found significant differences at 80ms for TP10 & AF7 for Dark v. Non-Dark. Additional electrodes are statistially significant if you remove participants 8 and 3.
+
+This aligns with previous findings. "Brain computer interface using flash onset and offset visual
+evoked potentials"
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(plotly)
+library(data.table)
+library(hrbrthemes)
+library("ggpubr")
+
+#Subsetting https://www.statmethods.net/management/subset.html
+
+n100 <- fread("../erps/n100.txt")
+fact <- n100[ which(n100$Type=='Fact' & n100$Participant!='p8' & n100$Participant!='p3'), ]
+procedure <- n100[ which(n100$Type=='Procedure' &  n100$Participant!='p8' & n100$Participant!='p3' ), ]
+dark <- n100[ which(n100$Type=='Dark'), ]
+light <- n100[ which(n100$Type=='Light'), ]
+factClean <- n100[ which(n100$Type=='Fact No Stimuli' & n100$Participant!='p8' & n100$Participant!='p3'), ]
+procedureClean <- n100[ which(n100$Type=='Procedure No Stimuli' & n100$Participant!='p8' & n100$Participant!='p3'), ]
+
+tone <- n100[ which(n100$Type=='Tone' & n100$Participant!='p8' & n100$Participant!='p3'), ]
+noTone <- n100[ which(n100$Type=='No Tone' & n100$Participant!='p8' & n100$Participant!='p3'), ]
+
+factMean <- mean(fact$TP9)
+procedureMean <- mean(procedure$TP9)
+darkMean <- mean(dark$TP9)
+lightMean <- mean(light$TP9)
+
+#wilcox.test(dark$TP9, light$TP9)
+#wilcox.test(dark$TP10, light$TP10)
+#wilcox.test(dark$AF7, light$AF7)
+#wilcox.test(dark$AF8, light$AF8)
+t.test(dark$TP9,light$TP9)
+t.test(dark$TP10,light$TP10)
+t.test(dark$AF7,light$AF7)
+t.test(dark$AF8,light$AF8)
+#ggdensity(light$TP9,  main = "dark$TP9", xlab = "X")
+
+
+#wilcox.test(fact$TP9, procedure$TP9)
+#wilcox.test(fact$TP10, procedure$TP10)
+#wilcox.test(fact$AF7, procedure$AF7)
+#wilcox.test(fact$AF8, procedure$AF8)
+#t.test(fact$TP9,procedure$TP9)
+#t.test(fact$TP10,procedure$TP10)
+#t.test(fact$AF7,procedure$AF7)
+#t.test(fact$AF8,procedure$AF8)
+
+#wilcox.test(factClean$TP9, procedureClean$TP9)
+#wilcox.test(factClean$TP10, procedureClean$TP10)
+#wilcox.test(factClean$AF7, procedureClean$AF7)
+#wilcox.test(factClean$AF8, procedureClean$AF8)
+#t.test(factClean$TP9,procedureClean$TP9)
+#t.test(factClean$TP10,procedureClean$TP10)
+#t.test(factClean$AF7,procedureClean$AF7)
+#t.test(factClean$AF8,procedureClean$AF8)
+
+#wilcox.test(tone$TP9, noTone$TP9)
+#wilcox.test(tone$TP10, noTone$TP10)
+#wilcox.test(tone$AF7, noTone$AF7)
+#wilcox.test(tone$AF8, noTone$AF8)
+t.test(tone$TP9,noTone$TP9)
+t.test(tone$TP10,noTone$TP10)
+t.test(tone$AF7,noTone$AF7)
+t.test(tone$AF8,noTone$AF8)
+
+```
+P600 Analysis
+
+
+Interesting peak around 600ms for No stimuli fact and no stimulus procedure. However, no statistical significance was found. Additional control studies needed. 
+
+```{r}
+p600 <- fread("../erps/p600.txt")
+fact <- p600[ which(p600$Type=='Fact No Stimuli' & p600$Participant!='p8' & p600$Participant!='p3'), ]
+procedure <- p600[ which(p600$Type=='Procedure No Stimuli' & p600$Participant!='p8' & p600$Participant!='p3'), ]
+ggdensity(fact$AF8,  main = "fact$AF8", xlab = "X")
+ggdensity(procedure$AF8,  main = "procedure$AF8", xlab = "X")
+t.test(fact$AF8,procedure$AF8)
+factMean <- mean(fact$AF8)
+procMean <- mean(procedure$AF8)
+
+```
+
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(plotly)
+library(data.table)
+library(hrbrthemes)
+
+n100_dark_p2 <- fread("../erps/n100_p2_dark.txt")
+n100_light_p2 <- fread("../erps/n100_p2_light.txt")
+tp9_p2_dark <- n100_dark_p2$TP9
+tp9_p2_light <- n100_light_p2$TP9
+af7_p2_dark <- n100_dark_p2$AF7
+af7_p2_light <- n100_light_p2$AF7
+af8_p2_dark <- n100_dark_p2$AF8
+af8_p2_light <- n100_light_p2$AF8
+tp10_p2_dark <- n100_dark_p2$TP10
+tp10_p2_light <- n100_light_p2$TP10
+
+darkDat <- data.frame(x = rep(1:dim(n100_dark_p2)[1]), type = rep("dark", dim(n100_dark_p2)[1]), tp9 = tp9_p2_dark, af7 = af7_p2_dark, af8 = af8_p2_dark, tp10 = tp10_p2_dark)
+
+lightDat <- data.frame(x = rep(1:dim(n100_light_p2)[1]), type = rep("light", dim(n100_light_p2)[1]), tp9 = tp9_p2_light, af7=af7_p2_light, af8=af8_p2_light, tp10=tp10_p2_light)
+
+fullData <- rbind(darkDat, lightDat)
+
+ggplot(fullData, aes(x=x, y=tp9, color=type)) + geom_point(shape=1)
+ggplot(fullData, aes(x=x, y=af7, color=type)) + geom_point(shape=1)
+ggplot(fullData, aes(x=x, y=af8, color=type)) + geom_point(shape=1)
+ggplot(fullData, aes(x=x, y=tp10, color=type)) + geom_point(shape=1)
+
+```
+# P200
+
+```{r}
+# OLD
+
+
+bins <- fread("../erplab_events/brain_butler_bins_n100.txt")
+
+# Dark Events
+tp9_dark = bins$bin3_TP9
+tp10_dark = bins$bin3_TP10
+af7_dark = bins$bin3_AF7
+af8_dark = bins$bin3_AF8
+
+# Non Dark
+tp9_non_dark = bins$bin4_TP9
+tp10_non_dark = bins$bin4_TP10
+af7_non_dark = bins$bin4_AF7
+af8_non_dark = bins$bin4_AF8
+
+# Tone
+tp9_tone = bins$bin5_TP9
+tp10_tone = bins$bin5_TP10
+af7_tone = bins$bin5_AF7
+af8_tone = bins$bin5_AF8
+
+# No Tone
+tp9_no_tone = bins$bin6_TP9
+tp10_no_tone = bins$bin6_TP10
+af7_no_tone = bins$bin6_AF7
+af8_no_tone = bins$bin6_AF8
+
+# No Tone
+
+if(FALSE) {
+  erpData <- data.frame(bins$V33, tp9_dark, tp9_non_dark)
+  fig <- plot_ly(erpData, x = ~bins$V33, y = ~tp9_dark, type = 'bar', name = 'TP9 Dark')
+  fig <- fig %>% add_trace(y = ~tp9_non_dark, name = 'TP9 Non-Dark')
+  fig <- fig %>% layout(yaxis = list(title = 'Voltage'), barmode = 'group')
+  fig
+}
+
+plotDifferences <- function(eventA, eventB, rowIDs, colIDs, yAxisLabel) {
+  erpData <- data.frame(rowIDs, eventA, eventB)
+  colnames(erpData) <- colIDs
+  fig <- plot_ly(erpData, x = ~rowIDs, y = ~eventA, type = 'bar', name = colIDs[2])
+  fig <- fig %>% add_trace(y = ~eventB, name = colIDs[3])
+  fig <- fig %>% layout(yaxis = list(title = yAxisLabel), barmode = 'group')
+  fig
+}
+
+columnLabels = c("Participants","Dark", "No Dark")
+
+# Run Dark Analysis
+
+if (FALSE) {
+  print("====Visual====")
+  plotDifferences(tp9_dark, tp9_non_dark, bins$V33, columnLabels,"Voltage")
+  plotDifferences(tp10_dark, tp10_non_dark, bins$V33, columnLabels,"Voltage")
+  plotDifferences(af7_dark, af7_non_dark, bins$V33, columnLabels,"Voltage")
+  plotDifferences(af8_dark, af8_non_dark, bins$V33, columnLabels,"Voltage")
+  print("AF7")
+  wilcox.test(af7_dark, af7_non_dark, paired = TRUE)
+  print("AF8")
+  wilcox.test(af8_dark, af8_non_dark, paired = TRUE)
+  print("TP9")
+  wilcox.test(tp9_dark, tp10_non_dark, paired = TRUE)
+  print("TP10")
+  wilcox.test(tp9_dark, tp10_non_dark, paired = TRUE)
+}
+
+
+
+#plotDifferences(tp9_tone, tp9_no_tone, bins$V33, columnLabels,"Voltage")
+if (FALSE) {
+  print("====Auditory====")
+  print("AF7")
+  wilcox.test(af7_tone, af7_no_tone, paired = TRUE)
+  print("AF8")
+  wilcox.test(af8_tone, af8_no_tone, paired = TRUE)
+  print("TP9")
+  wilcox.test(tp9_tone, tp9_no_tone, paired = TRUE)
+  print("TP10")
+  wilcox.test(tp10_tone, tp10_no_tone, paired = TRUE)
+  
+  plotDifferences(tp9_tone, tp9_no_tone, bins$V33, columnLabels,"Voltage")
+  plotDifferences(tp10_tone, tp10_no_tone, bins$V33, columnLabels,"Voltage")
+}
+
+#print(erpData)
+
+
+#print(positiveLatency$bin1_T9)
+#hist(positiveLatency$bin1_T9)
+
+
+#print(negativeLatency)
+
+#summary(cars)
+#library(data.table)
+```
