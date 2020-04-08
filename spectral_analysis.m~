@@ -18,7 +18,7 @@ global COMPONENT_COUNT;
 COMPONENT_COUNT = 3;
 
 global FILE_COUNT;
-FILE_COUNT = 1;
+FILE_COUNT = -1;
 
 % Directory that stores raw files
 rawDirectory = strcat(pwd, "/raw/");
@@ -61,6 +61,7 @@ epochLen = 1000;
 setFiles = dir(fullfile(cleanDirectory,'*.set'));
 
 % Process Files
+globalTable = {};
 
 eeglab("redraw")
 for k = 1:getFileCount(setFiles)
@@ -104,92 +105,131 @@ for k = 1:getFileCount(setFiles)
     fileLocation = char(strcat(pwd, '/spectral_analysis/'));
     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, CURRENTSET,'gui','off');
     %plotEpoch(1)
-   
-   
-    for i = 1:15
-        data = getEpochData(1,i);
-        t = getEpochType(i);
-        %figure
-        %[power, freq] = spectopo(data, 0, 220, 'limits', [0 30], 'title', char(title), 'freqrange', [0 30]);
-        [pxx w] = getWelch(data, sampleRate, true)
-       
-       
-     
-        
-        %{
-        [pxx,w] = periodogram(data, hamming(length(data)), [], 220, 'onesided');
-        output = 10*log10(pxx);
-        figure
-        plot(w(1:120), output(1:120));
-        %}
-        
-        %p = bandpower(data,220,[0 5]);
-        
-        %figure
-        %plotEpoch(i)
-        %{
-        Y = fft(data);
-        L = 440;
-        e = 60;
-        X = 1:e;
-        Y = abs(Y/L);
-        Y2 = Y(1:L/2+1);
-        Y2(2:e) = 2 * Y2(2:e);
-        output = Y2(1:e);
-        figure
-        plot(X,Y(1:e));
-        %}
-        %figure
-        %plot(X,output);
-        
+    bin = EEG.event(1).bini
+    s = size(bin)
+    disp(s(2))
+    
+    for type = 1:s(2)
+        target = bin(type);
+        out = strcat('==> ', num2str(target))
+        disp('hello')
     end
     
     
+    for epoch = 1:1
+        for channel = 1:numChannels
+            data = getEpochData(channel,epoch);
+            type = char(getEpochType(epoch));
+            %storeEpoch(data, false, epoch, participantName)
+            
+            
+
+            %res = isBin(8, epoch)
+           
+            %[power, freq] = spectopo(data, 0, 220, 'limits', [0 30], 'title', char(type), 'freqrange', [0 30]);
+            
+
+            % Get spectral info
+            %{
+            res = getWelch(data, sampleRate, false);  
+            f = res(:,2);
+            pxx = res(:,1);
+            pxx = 10*log10(pxx);
+            delta = bandpower(pxx, f, [1 3], 'psd');
+            theta = bandpower(pxx, f, [4 6], 'psd');
+            alpha = bandpower(pxx, f, [7 13], 'psd');
+            beta = bandpower(pxx, f, [14 25], 'psd');
+            gamma = bandpower(pxx, f, [26 30], 'psd');
+            channelLabel = getChannelLabel(channel);
+
+            t = table({char(participantName)}, {type}, {channelLabel}, {delta}, {theta}, {alpha}, {beta}, {gamma}, 'VariableNames',{'Participant', 'Type', 'Electrode', 'Delta', 'Theta', 'Alpha','Beta', 'Gamma'});
+            globalTable = [globalTable; t];
+            %}
+            
+        end
+    end
     
     %EEG = pop_saveset( EEG, 'filename',fileName,'filepath',fileLocation);
-    
-    
-    
-    % Analyze ERP
-    
-    % Average ERP
-    %ERP = pop_averager( ALLEEG , 'Criterion', 1, 'DSindex',  CURRENTSET, 'SEM', 'on');
-    
-    % Filter ERP
-    %ERP = pop_filterp( ERP,1:4 , 'Cutoff',20, 'Design', 'butter', 'Filter', 'lowpass', 'Order',2 );
-    
-     %{
-    pop_ploterps( ERP, [ 1, 2],1:4, 'AutoYlim', 'on', 'Axsize', [ 0.05 0.08], 'BinNum', 'on'                ...
-        , 'Blc', 'pre', 'Box', [ 4 4], 'ChLabel', 'on', 'FontSizeChan',10, 'FontSizeLeg',10           ...
-        , 'LegPos', 'bottom', 'Linespec', {'k-' , 'r-' }, 'LineWidth',1, 'Maximize', 'on'             ...
-        , 'Position', [ 102.833 9.375 108.667 35.125], 'Style', 'Matlab'                              ...
-        , 'xscale', [ -200.0 798.0 -100:170:750], 'YDir', 'normal', 'yscale', [ -10.0 10.0 -10:5:10]  );
-    
-    
-    
-    % Save ERP file
-    erpFileName = strcat(fileName, '.erp');
-    erpFileSetname = strcat(fileName, '.set');
-    erpFileLocation = char(strcat(pwd, "/erps/", erpFileName));
-    ERP = pop_savemyerp( ERP, 'erpname', erpFileSetname, 'filename', erpFileLocation);
-    %}
-    
     
     eeglab("redraw")
 end
 
+%fileName = char(strcat(pwd, "/spectral_analysis/spectral.txt"));
+%writetable(globalTable, fileName);
+
+
+function storeEpoch(data, plotGraph, epoch, participantName)
+    global globalTable;
+    global sampleRate;
+    
+    bins = getBins(epoch);
+    s = size(bin)
+    for type = 
+    
+    
+    % Start here adding rows for each epoch type. 
+    % Maybe just save duplicates to make analyzing in R easier
+    %{
+    
+    % Get array of types
+    types = char(getEpochType(epoch));
+    
+    % Loop through array and store epochs
+    
+    res = getWelch(data, sampleRate, plotGraph);
+    f = res(:,2);
+    pxx = res(:,1);
+    pxx = 10*log10(pxx);
+    delta = bandpower(pxx, f, [1 3], 'psd');
+    theta = bandpower(pxx, f, [4 6], 'psd');
+    alpha = bandpower(pxx, f, [7 13], 'psd');
+    beta = bandpower(pxx, f, [14 25], 'psd');
+    gamma = bandpower(pxx, f, [26 30], 'psd');
+    channelLabel = getChannelLabel(channel);
+    t = table({char(participantName)}, {type}, {channelLabel}, {delta}, {theta}, {alpha}, {beta}, {gamma}, 'VariableNames',{'Participant', 'Type', 'Electrode', 'Delta', 'Theta', 'Alpha','Beta', 'Gamma'});
+    %}
+end
+
+
+
+function bins = getBins(epoch)
+    global EEG
+    bins = EEG.event(epoch).bini;
+end
+
+function res = isBin(binID, epoch)
+    global EEG
+    bins = EEG.event(epoch).bini;
+    res = any(bins(:) == binID);
+end 
+
+function label = getChannelLabel(channelID)
+    global EEG
+    label = EEG.chanlocs(:,channelID).labels;
+end
+
+function epochs = getEpochCount()
+    global EEG
+    s = size(EEG.data);
+    epochs = s(3);
+end
+
+function c = rep(count, val)
+    c = cell(1,count);
+    c(:) = {val};
+    c = c';
+end
+
+
 function psd = getWelch(signal, sampleRate, plot)
-     % If interested in higher frequency resolution try
-     %  periodogram(data, hamming(length(data)), [], sampleRate, 'onesided');
+     % If interested in higher frequency resolution try:
+     % periodogram(data, hamming(length(data)), [], sampleRate, 'onesided');
      [pxx,w] = pwelch(signal, [],[], [], sampleRate);
      if (plot == true)
          figure
          pwelch(signal, [],[], [], sampleRate);
      end
      psd = [pxx w];
-
-     
-
 end
 
 function epoch = getEpochData(channel, epoch)
@@ -219,11 +259,6 @@ function epochType = getEpochType(epoch)
     type = EEG.event(epoch).type;
     type = split(type, ",");
     epochType = type(1);
-end
-
-function label = getChannelLabel(channelID)
-    global EEG
-    label = EEG.chanlocs(:,channelID).labels;
 end
 
 function rej = getRejects()

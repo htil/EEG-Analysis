@@ -77,7 +77,6 @@ t.test(tone$AF8,noTone$AF8)
 ```
 P600 Analysis
 
-
 Interesting peak around 600ms for No stimuli fact and no stimulus procedure. However, no statistical significance was found. Additional control studies needed. 
 
 ```{r}
@@ -224,3 +223,26 @@ if (FALSE) {
 #summary(cars)
 #library(data.table)
 ```
+#Spectral Analysis
+```{r}
+spectral <- fread("../spectral_analysis/spectral.txt")
+channel <- "AF8"
+
+# Filter by channel and type
+fact <- spectral[ which( spectral$Electrode==channel &  spectral$Type=='B8' & spectral$Participant!='p8' & spectral$Participant!='p3'), ]
+procedure <- spectral[ which( spectral$Electrode==channel & spectral$Type=='B9' & spectral$Participant!='p8' & spectral$Participant!='p3'), ]
+
+
+
+f = fact$Beta
+p = procedure$Beta
+
+t.test(f,p)
+ggdensity(f,  main = "fact$beta", xlab = "X")
+ggdensity(p,  main = "procedure$beta", xlab = "X")
+
+meanFact <- mean(f)
+meanProc <- mean(p)
+
+```
+

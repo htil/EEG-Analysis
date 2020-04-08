@@ -186,7 +186,6 @@ end
 function res = isBin(binID, epoch)
     global EEG
     bins = EEG.event(epoch).bini;
-    %disp(bins(:));
     res = any(bins(:) == binID);
 end 
 
