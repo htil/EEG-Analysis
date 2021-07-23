@@ -122,7 +122,6 @@ for k = 1:getFileCount(setFiles)
         for channel = 1:numChannels
             data = getEpochData(channel,epoch);
             
-            
             bins = getBins(epoch);
             s = size(bins);
             for index = 1:s(2)
@@ -170,6 +169,9 @@ function storeEpoch(data, plotGraph, epoch, participantName, type)
     global globalTable;
     global sampleRate;
     
+    
+    
+    
     res = getWelch(data, sampleRate, plotGraph);
     freq = res(:,2);
     pxx = res(:,1);
@@ -180,9 +182,7 @@ function storeEpoch(data, plotGraph, epoch, participantName, type)
     beta = bandpower(pxx, freq, [14 25], 'psd');
     gamma = bandpower(pxx, freq, [26 30], 'psd');
     disp(gamma)
-    
-    
-    
+     
     
     % Start here adding rows for each epoch type. 
     % Maybe just save duplicates to make analyzing in R easier

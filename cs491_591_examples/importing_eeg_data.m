@@ -1,3 +1,5 @@
+eeglab
+
 % Importing EEG Data
 EEG = pop_loadset('filename', 'p1.set', 'filepath', pwd );
 

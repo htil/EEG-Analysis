@@ -60,6 +60,10 @@ compStr = 'p600';
 
 eeglab("redraw")
 
+
+%% The following code was used to extract all ERPS
+
+%{
 for k = 1:getFileCount(setFiles)
     baseFileName = setFiles(k).name;
     participantName = split(baseFileName, "_");
@@ -88,23 +92,38 @@ for k = 1:getFileCount(setFiles)
     t = addComponent(comp, 9, 'Procedure No Stimuli', compStr, participantName);
     globalTable = [globalTable; t];
     
-    %{
-    for i = 1:4
-        %epoch1_channel1 = EEG.data(i,:,2);
-        epoch1_channel1 = getEpochData(i,1);
-        x = 1:220;
-        x = x*(1000/sampleRate);
-        figure
-        plot(x,epoch1_channel1)
-        title(num2str(i))
-    end
-    %}
 
     eeglab("redraw")
 end
+%}
 
-fileName = char(strcat(pwd, "/erps/", compStr, ".txt"));
-writetable(globalTable, fileName);
+%fileName = char(strcat(pwd, "/erps/", compStr, ".txt"));
+%writetable(globalTable, fileName);
+
+% The code above was used to extract all ERPS %
+
+%% This code was used to calculate baseline data 
+
+%{
+for k = 1:getFileCount(setFiles)
+    baseFileName = setFiles(k).name;
+    participantName = split(baseFileName, "_");
+    participantName = participantName(1);
+    disp(participantName)
+    disp(baseFileName)
+end
+%}
+
+EEG = pop_loadset('filename', 'p1_ar.set', 'filepath', cleanDirectory );
+[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, CURRENTSET,'setname', 'p1_ar_baseline.set','gui','off');
+[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
+
+e = getEpochData(1,1);
+plotEpoch(1)
+
+
+
+%% Functions
 
 function t = addComponent(component, bin, type, componentString, participantName)
     %global globalTable;

@@ -1,0 +1,16 @@
+---
+title: "Brain Butler Chloe"
+output: html_notebook
+---
+
+```{r}
+n100 <- fread("n100.txt")
+fact <- n100[ which(n100$Type=='Fact' & n100$Participant!='p8' & n100$Participant!='p3'), ]
+procedure <- n100[ which(n100$Type=='Procedure' &  n100$Participant!='p8' & n100$Participant!='p3' ), ]
+dark <- n100[ which(n100$Type=='Dark'), ]
+light <- n100[ which(n100$Type=='Light'), ]
+factMean <- mean(fact$TP9)
+ggdensity(fact$AF8,  main = "fact$AF8", xlab = "X")\
+#fullData <- rbind(darkDat, lightDat)
+#ggplot(fullData, aes(x=x, y=tp9, color=type)) + geom_point(shape=1)
+```

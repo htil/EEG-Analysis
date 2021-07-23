@@ -1,6 +1,6 @@
 # ERPLAB
 
-**Note**: Original scripts and data from Ethan's study is located in `Documents > EEGLAB`. For more details see the [tutorial video](https://youtu.be/zTdjgtmdKE8). To install ERPLAB see [this video](https://youtu.be/nHZ16IR9moU). 
+**Note**: Original scripts and data from Ethan's study are located in `Documents > EEGLAB` and `Documents > double_dipper`. For more details see the [tutorial video](https://youtu.be/zTdjgtmdKE8). To install ERPLAB see [this video](https://youtu.be/nHZ16IR9moU). 
 
 Adding an EventList: Assigning events to Bins with BINLISTER
 Epoching the Continuous EEG

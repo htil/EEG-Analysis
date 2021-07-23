@@ -67,8 +67,9 @@ for k = 1:getFileCount(setFiles)
     newStr = split(baseFileName,".");
     fileName = char(newStr(1));
     
+    % Import events
     erplab_eventlist_file_loc =  strcat(pwd, "/erplab_events/", fileName, "_elist.txt");
-    disp(erplab_eventlist_file_loc)
+    %disp(erplab_eventlist_file_loc)
 
     EEG  = pop_creabasiceventlist( EEG , 'AlphanumericCleaning', 'on', 'BoundaryNumeric', { -99 }, 'BoundaryString', { 'boundary' }, 'Eventlist', char(erplab_eventlist_file_loc) );    
     
@@ -78,13 +79,12 @@ for k = 1:getFileCount(setFiles)
     EEG = eeg_checkset( EEG );
     
     % Extract Epochs
-    EEG = pop_epochbin( EEG , [-200.0  800.0],  'pre');
+    EEG = pop_epochbin( EEG , [-200.0  14000.0],  'pre');
     [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 2,'gui','off'); 
     
     % Artifact Rejection
-    EEG  = pop_artmwppth( EEG , 'Channel',  1:4, 'Flag',  1, 'Threshold',  100, 'Twindow', [ -200 795.5], 'Windowsize',  200, 'Windowstep',  100 );
+    EEG  = pop_artmwppth( EEG , 'Channel',  1:4, 'Flag',  1, 'Threshold',  100, 'Twindow', [6000 7000], 'Windowsize',  200, 'Windowstep',  100 );
     
-    % Analyze ERP
     
     % Average ERP
     ERP = pop_averager( ALLEEG , 'Criterion', 1, 'DSindex',  CURRENTSET, 'SEM', 'on');
@@ -102,8 +102,8 @@ for k = 1:getFileCount(setFiles)
     %}
     
     % Save ERP file
-    erpFileName = strcat(fileName, '.erp');
-    erpFileSetname = strcat(fileName, '.set');
+    erpFileName = strcat(fileName, '_promblem_prompt.erp');
+    erpFileSetname = strcat(fileName, '_promblem_prompt.set');
     erpFileLocation = char(strcat(pwd, "/erps/", erpFileName));
     ERP = pop_savemyerp( ERP, 'erpname', erpFileSetname, 'filename', erpFileLocation);
     eeglab("redraw")
